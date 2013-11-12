@@ -1,0 +1,10 @@
+form#registration(action='/', method='post')
+  fieldset
+    legend Registration
+    .row
+
+      mixin field(6, 'text', 'email', 'Email')
+      mixin field(6, 'password', 'password', 'Password')
+    .row
+      .small-9.columns: p#register-error
+      .small-3.columns: button#register.radius.success.small.expand Register
