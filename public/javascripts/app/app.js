@@ -1,6 +1,8 @@
 $(document).ready(initialize);
 
 var socket;
+var player;
+var color;
 
 function initialize(){
   $(document).foundation();
@@ -8,6 +10,13 @@ function initialize(){
   $('#register').on('click', clickRegister);
   $('#login').on('click', clickLogin);
   $('#logout-button').on('click', clickLogout);
+  $('#start').on('click', clickStart);
+}
+
+function clickStart() {
+  player = getValue('#player');
+  color = getValue('#color');
+  socket.emit('startgame', {player: player, color: color});
 }
 
 function clickRegister(e){
@@ -55,7 +64,7 @@ function htmlRegisterComplete(data) {
     break;
 
     default:
-      $('p#register-error').empty().append('An account with that email address already exists!');
+      $('p#register-error').empty().append('Account already exists');
     break;
   }
 }
