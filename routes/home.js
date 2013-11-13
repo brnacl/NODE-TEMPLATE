@@ -3,12 +3,11 @@
  */
 
 exports.index = function(req, res){
-  console.log('home.index');
   res.render('home/index',
     {
       title: 'Express',
       heading: 'Home',
-      userName: res.locals.user ? res.locals.user.email : null
+      user: res.locals.user ? res.locals.user : null
     }
   );
 };

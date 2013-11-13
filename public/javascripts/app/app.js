@@ -1,6 +1,7 @@
 $(document).ready(initialize);
 
 var socket;
+var name;
 var player;
 var color;
 
@@ -10,13 +11,6 @@ function initialize(){
   $('#register').on('click', clickRegister);
   $('#login').on('click', clickLogin);
   $('#logout-button').on('click', clickLogout);
-  $('#start').on('click', clickStart);
-}
-
-function clickStart() {
-  player = getValue('#player');
-  color = getValue('#color');
-  socket.emit('startgame', {player: player, color: color});
 }
 
 function clickRegister(e){
@@ -32,7 +26,6 @@ function clickLogin(e){
   var data = $('form#authentication').serialize();
   sendAjaxRequest(url, data, 'post', 'put', e, function(data){
     htmlLoginComplete(data);
-
   });
 }
 

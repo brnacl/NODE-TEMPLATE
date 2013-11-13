@@ -14,8 +14,8 @@
       ul.right
 
         li.divider
-        if userName
-          li.username= 'Logged in as: ' + userName
+        if user
+          li.username= 'Logged in as: ' + user.email
           li.divider
           li: a#logout-button(href="#") Logout
         else

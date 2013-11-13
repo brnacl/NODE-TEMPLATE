@@ -5,7 +5,6 @@ var User = mongoose.model('User');
 exports.create = function(req, res){
   var user = new User();
   user.email = req.body.email;
-
   bcrypt.hash(req.body.password, 10, function(err, hash){
     user.password = hash;
     user.save(function(err, user){
@@ -19,7 +18,6 @@ exports.create = function(req, res){
 
 exports.login = function(req, res){
   var email = req.body.email;
-
   User.findOne({email: email}, function(err, user){
     if(user){
 
@@ -30,9 +28,7 @@ exports.login = function(req, res){
             req.session.save(function(err){
               res.send({status: 'ok'});
             });
-
           });
-
         } else {
           req.session.destroy(function(err){
             res.send({status: 'error'});
@@ -40,7 +36,6 @@ exports.login = function(req, res){
         }
       });
     } else {
-
       req.session.destroy(function(err){
         res.send({status: 'error'});
       });
