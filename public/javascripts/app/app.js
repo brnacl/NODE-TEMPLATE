@@ -11,6 +11,7 @@ function initialize(){
   $('#register').on('click', clickRegister);
   $('#login').on('click', clickLogin);
   $('#logout-button').on('click', clickLogout);
+  $('#savefile').on('click', clickSaveFile);
 }
 
 function clickRegister(e){
@@ -39,15 +40,21 @@ function clickLogout(e){
 }
 
 function clickSaveFile(e){
-  if($('input[name="file1"]').val() !== ''){
-    console.log($('input[name="file1"]').val());
-    // var url = '/upload';
+  // if($('input[name="file1"]').val() !== ''){
+    var url = '/upload';
+    var data = new FormData();
+    var file;
+    var fileName;
+    $('#file-upload input').each(function(i){
+      file = this.files[0];
+      fileName = $(this).attr('name');
+      data.append(fileName,file);
+    });
+    sendAjaxFiles(url, data, 'post', null, e, function(result){
+      console.log(result);
+    });
 
-    // var data = $('form#file-upload').serialize();
-    // sendAjaxRequest(url, {}, 'post', null, e, function(data){
-    //   console.log(data);
-    // });
-  }
+  // }
 
 }
 

@@ -40,6 +40,28 @@ function sendAjaxRequest(url, data, verb, altVerb, event, successFn){
   if(event) event.preventDefault();
 }
 
+
+function sendAjaxFiles(url, data, verb, altVerb, event, successFn){
+  var options = {};
+  options.url = url;
+  options.type = verb;
+  options.data = data;
+  options.success = successFn;
+  options.processData = false;
+  options.contentType = false;
+
+  options.error = function(jqXHR, status, error){console.log(error);};
+
+  if(altVerb)
+    if(typeof data === 'string')
+      options.data += '&_method=' + altVerb;
+    else
+      options.data._method = altVerb;
+
+  $.ajax(options);
+  if(event) event.preventDefault();
+}
+
 function getUrlVars() {
   var vars = {};
   var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value){

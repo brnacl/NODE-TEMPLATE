@@ -5,7 +5,8 @@ block content
     .small-4.columns
       h3.subheader ImageA1
       form#file-upload(action="/upload", method="post", enctype="multipart/form-data")
-        input(type="file", name="file1")
-        button#savefile.radius.success.small.expand Upload File
+        input(id="file1", type="file", name="file1")
+        input(id="file2", type="file", name="file2")
+        a#savefile.button.radius.success.small.expand Upload File
     .small-8.columns
       img(src='/uploads/projects/dajkfhldkjfhalkdjfhlajsdhflakjsdhflajsh.jpg')
