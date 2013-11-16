@@ -1,0 +1,11 @@
+extends ../template/layout
+
+block content
+  .row
+    .small-4.columns
+      h3.subheader ImageA1
+      form#file-upload(action="/upload", method="post", enctype="multipart/form-data")
+        input(type="file", name="file1")
+        button#savefile.radius.success.small.expand Upload File
+    .small-8.columns
+      img(src='/uploads/projects/dajkfhldkjfhalkdjfhlajsdhflakjsdhflajsh.jpg')
