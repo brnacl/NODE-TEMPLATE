@@ -38,6 +38,19 @@ function clickLogout(e){
   });
 }
 
+function clickSaveFile(e){
+  if($('input[name="file1"]').val() !== ''){
+    console.log($('input[name="file1"]').val());
+    // var url = '/upload';
+
+    // var data = $('form#file-upload').serialize();
+    // sendAjaxRequest(url, {}, 'post', null, e, function(data){
+    //   console.log(data);
+    // });
+  }
+
+}
+
 function initializeSocketIO(){
   var port = location.port ? location.port : '80';
   var url = location.protocol + '//' + location.hostname + ':' + port + '/app';
