@@ -17,9 +17,9 @@ exports.index = function(req, res){
 };
 
 exports.create = function(req, res){
-  var tmpFilePath = req.files.imageUpload.path;
+  var tmpFilePath = req.files.file1.path;
   var newDirname = 'projects/';
-  var newDir = __dirname + '/../public/uploads/' + newDirname;
+  var newDir = 'public/uploads/' + newDirname;
   var newFilename = 'dajkfhldkjfhalkdjfhlajsdhflakjsdhflajsh.jpg';
   var newFilePath = newDir + newFilename;
   var $FILE;
@@ -32,5 +32,3 @@ exports.create = function(req, res){
     function(fn){fn(null,res.send('ok'));}
   ]);
 };
-
-
