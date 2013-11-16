@@ -58,6 +58,12 @@ function clickSaveFile(e){
 
 }
 
+function clickAddFile(){
+
+}
+
+
+
 function initializeSocketIO(){
   var port = location.port ? location.port : '80';
   var url = location.protocol + '//' + location.hostname + ':' + port + '/app';
