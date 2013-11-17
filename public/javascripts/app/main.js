@@ -12,6 +12,7 @@ function initialize(){
   $('#login').on('click', clickLogin);
   $('#logout-button').on('click', clickLogout);
   $('#savefiles').on('click', clickSaveFiles);
+  $('.uploaded-images').find('.delete-image').on('click', clickDeleteImage);
 }
 
 function clickRegister(e){
@@ -59,7 +60,7 @@ function clickSaveFiles(e){
     } else {
       data.append('postId', $('#postId').val());
       sendAjaxFiles(url, data, 'post', null, e, function(result){
-        window.location = '/';
+        window.location = '/upload';
       });
     }
 
@@ -67,7 +68,17 @@ function clickSaveFiles(e){
 
 }
 
-function clickAddFile(){
+function clickAddFileInput(){
+
+}
+
+function clickDeleteImage(){
+  var url = '/upload';
+  var data = {};
+  data.imageId = $(this).data('image-id');
+  // sendAjaxRequest(url, data, 'post', 'delete', e, function(data){
+    $(this).parent().parent().remove();
+  // });
 
 }
 
@@ -88,11 +99,23 @@ function socketConnected(data){
 function htmlRegisterComplete(data) {
   switch(data.status){
     case 'ok':
-      window.location = '/login';
+      window.location = '/login?newreg=true';
     break;
-
-    default:
-      $('p#register-error').empty().append('Account already exists');
+    case 'invalid':
+      $('p#register-error').text('Please use a valid email address');
+    break;
+    case 'nopassword':
+      $('p#register-error').text('Please enter a password');
+    break;
+    case 'nopassword2':
+      $('p#register-error').text('Please re-type your password');
+    break;
+    case 'nomatch':
+      $('p#register-error').text('Passwords must match exactly');
+      $('input[name="password2"]').val('');
+    break;
+    case 'error':
+      $('p#register-error').text('Account already exists');
     break;
   }
 }

@@ -33,7 +33,8 @@ exports.login = function(req, res){
   res.render('home/login',
     {
       title: 'Login',
-      heading: 'Login'
+      heading: 'Login',
+      newreg: req.query.newreg
     }
   );
 };

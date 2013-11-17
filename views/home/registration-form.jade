@@ -2,9 +2,13 @@ form#registration(action='/', method='post')
   fieldset
     legend Registration
     .row
-
-      mixin field(6, 'text', 'email', 'Email')
-      mixin field(6, 'password', 'password', 'Password')
+      mixin field(12, 'text', 'email', 'Email Address')
     .row
-      .small-9.columns: p#register-error
-      .small-3.columns: button#register.radius.success.small.expand Register
+      mixin field(12, 'password', 'password', 'Password')
+    .row
+      mixin field(12, 'password', 'password2', 'Re-type password')
+    .row
+      .small-12.columns: button#register.radius.success.tiny Register
+    .row
+      .small-12.columns
+        p#register-error

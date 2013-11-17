@@ -4,12 +4,19 @@ block content
   .row
     .small-4.columns
       form#file-upload(action="/upload", method="post", enctype="multipart/form-data")
-        input(id="postId", type="text", name="postId")
-        input(id="file1", type="file", name="file1")
-        input(id="file2", type="file", name="file2")
-        a#savefiles.button.radius.success.small Upload Files
-        p#upload-error
-    .small-8.columns
+        fieldset
+          legend Images
+          lable(for="postId") Post ID:
+          input(id="postId", type="text", name="postId" placeholder="1000")
+          input(id="file1", type="file", name="file1")
+          input(id="file2", type="file", name="file2")
+          a#savefiles.button.radius.success.small Upload Files
+          p#upload-error
+    .uploaded-images.small-8.columns
       if images
         each image in images
-          img(src='/uploads/' + image.postId + '/' + image.name)
+          .row
+            .small-6.columns
+              img(src="/uploads/" + image.postId + "/" + image.name)
+            .small-6.columns
+              button.delete-image.tiny.alert(data-image-id=image.id) Delete
