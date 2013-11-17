@@ -29,18 +29,17 @@ exports.create = function(req, res){
   var newDirname = req.body.postId + '/';
   var newDir = 'public/uploads/' + newDirname;
   var newFiles = [];
-  var newFile;
-  var $FILEDATA;
+  var newFile, $FILEDATA;
 
   for(var i in req.files) {
     newFile = {};
-
     newFile.name = req.files[i].name;
     newFile.tmpPath = req.files[i].path;
     newFile.newPath = newDir + req.files[i].name;
     newFile.type = req.files[i].type;
     newFiles.push(newFile);
   }
+
   async.waterfall([
     function(fn){m.getFilesFromForm(newFiles,fn);},
     function(files,fn){$FILEDATA = files; m.dirExists(newDir,fn);},
