@@ -40,7 +40,6 @@ function sendAjaxRequest(url, data, verb, altVerb, event, successFn){
   if(event) event.preventDefault();
 }
 
-
 function sendAjaxFiles(url, data, verb, altVerb, event, successFn){
   var options = {};
   options.url = url;
@@ -68,4 +67,16 @@ function getUrlVars() {
     vars[key] = value;
   });
   return vars;
+}
+
+function validateImageFileType(ext) {
+  ext = parseLowerCase(ext.substr(ext.indexOf('/') + 1));
+  var validFileTypes = ['jpg', 'jpeg', 'png', 'gif'];
+  var isValid = false;
+  for(var i = 0; i < validFileTypes.length; i++){
+    if(ext === validFileTypes[i]){
+      isValid = true;
+    }
+  }
+  return isValid;
 }

@@ -3,10 +3,13 @@ extends ../template/layout
 block content
   .row
     .small-4.columns
-      h3.subheader ImageA1
       form#file-upload(action="/upload", method="post", enctype="multipart/form-data")
+        input(id="postId", type="text", name="postId")
         input(id="file1", type="file", name="file1")
         input(id="file2", type="file", name="file2")
-        a#savefile.button.radius.success.small.expand Upload File
+        a#savefiles.button.radius.success.small Upload Files
+        p#upload-error
     .small-8.columns
-      img(src='/uploads/projects/dajkfhldkjfhalkdjfhlajsdhflakjsdhflajsh.jpg')
+      if images
+        each image in images
+          img(src='/uploads/' + image.postId + '/' + image.name)

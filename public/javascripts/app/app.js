@@ -11,7 +11,7 @@ function initialize(){
   $('#register').on('click', clickRegister);
   $('#login').on('click', clickLogin);
   $('#logout-button').on('click', clickLogout);
-  $('#savefile').on('click', clickSaveFile);
+  $('#savefiles').on('click', clickSaveFiles);
 }
 
 function clickRegister(e){
@@ -33,26 +33,35 @@ function clickLogin(e){
 function clickLogout(e){
   var url = '/logout';
   sendAjaxRequest(url, {}, 'post', 'delete', e, function(data){
-
     window.location = '/login';
-
   });
 }
 
-function clickSaveFile(e){
+function clickSaveFiles(e){
   // if($('input[name="file1"]').val() !== ''){
+
     var url = '/upload';
     var data = new FormData();
-    var file;
-    var fileName;
-    $('#file-upload input').each(function(i){
-      file = this.files[0];
-      fileName = $(this).attr('name');
-      data.append(fileName,file);
+    var file, fileName, fileType, isImage;
+    $('#file-upload input[type="file"]').each(function(i){
+      if(this.files[0]){
+        fileType = this.files[0].type;
+        isImage = validateImageFileType(fileType);
+        if(isImage){
+          file = this.files[0];
+          fileName = $(this).attr('name');
+          data.append(fileName,file);
+        }
+      }
     });
-    sendAjaxFiles(url, data, 'post', null, e, function(result){
-      console.log(result);
-    });
+    if(!isImage){
+      return $('#upload-error').text('All files must be images (.jpg, .png, .gif)');
+    } else {
+      data.append('postId', $('#postId').val());
+      sendAjaxFiles(url, data, 'post', null, e, function(result){
+        window.location = '/';
+      });
+    }
 
   // }
 
