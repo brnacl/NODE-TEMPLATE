@@ -34,7 +34,7 @@ exports.login = function(req, res){
     {
       title: 'Login',
       heading: 'Login',
-      newreg: req.query.newreg
+      signup: req.query.signup
     }
   );
 };

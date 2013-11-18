@@ -99,7 +99,7 @@ function socketConnected(data){
 function htmlRegisterComplete(data) {
   switch(data.status){
     case 'ok':
-      window.location = '/login?newreg=true';
+      window.location = '/login?signup=true';
     break;
     case 'invalid':
       $('p#register-error').text('Please use a valid email address');
