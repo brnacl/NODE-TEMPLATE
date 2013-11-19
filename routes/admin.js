@@ -2,10 +2,11 @@
 var mongoose = require('mongoose');
 var async = require('async');
 var m = require('../lib/middleware');
+var fs = require('fs');
 var File = mongoose.model('File');
 var Post = mongoose.model('Post');
 var User = mongoose.model('User');
-var fs = require('fs');
+
 
 
 /*
@@ -181,7 +182,7 @@ exports.deleteFile = function(req,res){
           fs.exists(filePath, function (ex){
             if(ex){
               fs.unlinkSync(filePath);
-              Post.findById(file.postId,function(err,post){
+              Post.findById(file.post,function(err,post){
                 var index = post.files.indexOf(fileId);
                 if (index > -1) {
                   post.files.splice(index, 1);

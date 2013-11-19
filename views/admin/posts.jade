@@ -8,7 +8,7 @@ block content
   .row
     .small-12.columns
       p#delete-error
-      if posts
+      if posts.length
         table
           thead
             th Created
@@ -19,7 +19,7 @@ block content
           tbody
             each post in posts
               tr
-                td= post.createdAt
+                td= moment(post.createdAt).format('MM/DD/YYYY')
                 td: b= post.title
                 td= post.createdBy
                 td= post.files.length
