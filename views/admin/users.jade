@@ -1,0 +1,25 @@
+extends ../template/layout
+
+block content
+  p#delete-error
+  .row
+    .small-12.columns
+      if userData
+        table
+          thead
+            th Email
+            th Created
+            th Role
+            th
+          tbody
+            each u in userData
+              tr
+                td= u.email
+                td= u.createdAt
+                td= u.isAdmin ? "Admin":"Subscriber"
+                if user.isAdmin && u.email !== user.email
+                    td: a.button.delete-user.tiny.alert(data-user-id=u.id) Delete
+                else
+                  td
+      else
+        h4 No Users

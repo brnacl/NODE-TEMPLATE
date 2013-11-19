@@ -4,12 +4,26 @@ body{
   background-color: @base;
 }
 
+.top-bar {
+  overflow: hidden;
+}
+
+.logo img{
+  padding: 5px;
+  height: 45px;
+
+}
+
 .hidden{
   display: none;
 }
 
-#login-error, #register-error, #upload-error {
+#login-error, #register-error, #upload-error ,#delete-error, #post-error {
   color: red;
+}
+
+#new-post textarea {
+  height: 250px;
 }
 
 #postId {
@@ -23,4 +37,8 @@ li.username {
   font-size: 14px;
   color: white;
   padding: 0 10px;
+}
+
+.file-thumb {
+  width: 150px;
 }

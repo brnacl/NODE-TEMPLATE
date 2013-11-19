@@ -1,8 +1,9 @@
 .contain-to-grid.fixed
   nav.top-bar
     ul.title-area
-      li.name
-        h1: a(href="/") LOGO
+      li.logo
+        a(href="/")
+          img(src='/images/logo.png')
       li.toggle-topbar.menu-icon
         a(href="#")
           span Menu
@@ -10,7 +11,7 @@
     section.top-bar-section
       ul.left
         li.divider
-        li: a(href="/upload") Upload
+        li: a(href="/admin") Admin
       ul.right
 
         li.divider

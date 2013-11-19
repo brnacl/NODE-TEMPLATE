@@ -1,0 +1,22 @@
+p#post-error
+form#new-post(action='/admin/posts', method='post', enctype="multipart/form-data")
+  fieldset
+    legend Post Data
+    .row
+      mixin field(6, 'text', 'title', 'Post Title')
+    .row
+      .small-12.columns
+        label(for='content') Content
+        textarea(name='content', placeholder='Content goes here...')
+  fieldset.images
+    legend Post Images
+    .row
+      .small-12.columns
+        input(id="file1", type="file", name="file1")
+    .row.add-image
+      .small-12.columns
+        a#add-image.button.radius.success.tiny Add Image
+  .row
+    .small-12.columns
+      a#create-post.button.right.radius.success.tiny Save Post
+      a.button.right.radius.alert.tiny(href='/admin/posts') Cancel

@@ -15,8 +15,9 @@ block content
     .uploaded-images.small-8.columns
       if images
         each image in images
-          .row
+          .uploaded-image.row
             .small-6.columns
               img(src="/uploads/" + image.postId + "/" + image.name)
             .small-6.columns
-              button.delete-image.tiny.alert(data-image-id=image.id) Delete
+              button.delete-image.tiny.alert(data-file-id=image.id) Delete
+              p#delete-error
