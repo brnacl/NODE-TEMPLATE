@@ -22,6 +22,6 @@ block content
                 td= file.name
                 td= file.createdBy
                 td: img.file-thumb(src='/uploads/' + file.post.id + '/' + file.name)
-                td: a.delete-image.tiny.alert(data-file-id=file.id) Delete
+                td: a.button.delete-image.tiny.alert(data-file-id=file.id) Delete
       else
         h4 No Files

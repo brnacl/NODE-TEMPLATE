@@ -8,7 +8,6 @@ require('require-dir')('./models');
 // route definitions
 var home = require('./routes/home');
 var users = require('./routes/users');
-var upload = require('./routes/upload');
 var admin = require('./routes/admin');
 
 var app = express();
@@ -41,17 +40,14 @@ app.delete('/admin/users', m.checkAuth, admin.deleteUser);
 
 app.get('/admin/posts', m.checkAuth, admin.posts);
 app.get('/admin/posts/new', m.checkAuth, admin.newPost);
+app.get('/admin/posts/:id', m.checkAuth, admin.editPost);
+app.put('/admin/posts/:id', m.checkAuth, admin.updatePost);
 app.post('/admin/posts', m.checkAuth, admin.createPost);
 app.delete('/admin/posts', m.checkAuth, admin.deletePost);
 
 app.get('/admin/files', m.checkAuth, admin.files);
 app.post('/admin/files', m.checkAuth, admin.createFiles);
 app.delete('/admin/files', m.checkAuth, admin.deleteFile);
-
-app.get('/upload', m.checkAuth, upload.index);
-app.post('/upload', m.checkAuth, upload.create);
-app.delete('/upload', m.checkAuth, upload.delete);
-
 
 // start server & socket.io
 var common = require('./sockets/common');

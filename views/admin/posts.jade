@@ -20,7 +20,7 @@ block content
             each post in posts
               tr
                 td= moment(post.createdAt).format('MM/DD/YYYY')
-                td: b= post.title
+                td: a(href='/admin/posts/'+post.id)= post.title
                 td= post.createdBy
                 td= post.files.length
                 td: a.button.delete-post.tiny.alert(data-post-id=post.id) Delete

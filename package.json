@@ -19,7 +19,8 @@
     "connect-redis": "*",
     "require-dir": "*",
     "bcrypt": "*",
-    "mongoose-unique-validator": "*"
+    "mongoose-unique-validator": "*",
+    "async-foreach": "*"
   },
   "devDependencies": {
     "grunt": "*",

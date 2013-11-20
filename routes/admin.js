@@ -2,7 +2,6 @@
 var mongoose = require('mongoose');
 var async = require('async');
 var m = require('../lib/middleware');
-var fs = require('fs');
 var File = mongoose.model('File');
 var Post = mongoose.model('Post');
 var User = mongoose.model('User');
@@ -99,6 +98,24 @@ exports.files = function(req, res){
   });
 };
 
+
+/*
+ * GET /admin/posts/:id
+ */
+
+exports.editPost = function(req, res){
+  var postId = req.params.id;
+  Post.findById(postId).populate('files').exec(function(err,post){
+    res.render('admin/newPost',
+      {
+        title: 'Admin - Edit Post',
+        heading: 'Admin - Edit Post',
+        post: post ? post : null
+      }
+    );
+  });
+};
+
 /*
  * POST /admin/posts
  */
@@ -125,7 +142,6 @@ exports.createFiles = function(req, res){
   var newDir = 'public/uploads/' + newDirname;
   var newFiles = [];
   var newFile, $FILEDATA;
-  var newIds = [];
 
   for(var i in req.files) {
     newFile = {};
@@ -138,33 +154,30 @@ exports.createFiles = function(req, res){
 
   async.waterfall([
     function(fn){m.getFilesFromForm(newFiles,fn);},
-    function(files,fn){$FILEDATA = files; m.dirExists(newDir,fn);},
-    function(exists,fn){if(!exists){m.createDir(newDir,fn);}else{fn();}},
-    function(fn){m.createFiles(newFiles,$FILEDATA,fn);},
-    function(fn){
-      for(var f = 0;f < newFiles.length;f++){
-        var dbFile = new File();
-        dbFile.name = newFiles[f].name;
-        dbFile.type = newFiles[f].type;
-        dbFile.post = req.body.postId;
-        dbFile.createdBy = res.locals.user.email;
-        dbFile.save(function(err,result){
-          newIds.push(result.id);
-        });
-      }
-      fn();
-    },
-    function(fn){
-      Post.findById(req.body.postId,function(err,post){
-        for(var x = 0; x < newIds.length; x++){
-          post.files.push(newIds[x]);
-        }
-        post.save();
-        res.send('ok');
-      });
-    }
+    function(files,fn){$FILEDATA = files; m.createDir(newDir,fn);},
+    function(fn){m.createFiles(newFiles,$FILEDATA,res.locals.user.email,req.body.postId,fn);},
+    function(newIds,fn){m.updatePostFiles(req.body.postId,newIds,fn);},
+    function(fn){res.send({status: 'ok'});}
   ]);
 };
+
+/*
+ * PUT /admin/posts/:id
+ */
+
+exports.updatePost = function(req, res){
+  var postId = req.params.id;
+  var title = req.body.postTitle;
+  var content = req.body.postContent;
+  Post.findById(postId, function(err,post){
+    post.title = title;
+    post.content = content;
+    post.save(function(err, post){
+      if(err){res.send({status: 'error'});} else {res.send({status: 'ok', postId: post.id});}
+    });
+  });
+};
+
 
 /*
  * DELETE /admin/files
@@ -172,32 +185,14 @@ exports.createFiles = function(req, res){
 
 exports.deleteFile = function(req,res){
   var fileId = req.body.fileId;
+  var $FILE;
   if(fileId){
-    File.findById(fileId,function(err,file){
-      if(err){
-        res.send({status: err});
-      } else {
-        var filePath = 'public/uploads/' + file.post + '/' + file.name;
-        File.findByIdAndRemove(fileId,function(err){
-          fs.exists(filePath, function (ex){
-            if(ex){
-              fs.unlinkSync(filePath);
-              Post.findById(file.post,function(err,post){
-                var index = post.files.indexOf(fileId);
-                if (index > -1) {
-                  post.files.splice(index, 1);
-                }
-                post.save(function(err,post){
-                  res.send({status: 'ok'});
-                });
-              });
-            } else {
-              res.send({status: 'file not found'});
-            }
-          });
-        });
-      }
-    });
+    async.waterfall([
+      function(fn){m.removeFile(fileId,fn);},
+      function(file,fn){$FILE = file;m.deleteFile($FILE,fn);},
+      function(fn){m.detachFileFromPost($FILE.id,$FILE.post,fn);},
+      function(fn){res.send({status: 'ok'});}
+    ]);
   }
 };
 
@@ -207,27 +202,13 @@ exports.deleteFile = function(req,res){
 
 exports.deletePost = function(req,res){
   var postId = req.body.postId;
+  var $POST;
   if(postId){
-    Post.findByIdAndRemove(postId, function(err,post){
-      if(post.files.length > 0){
-        var fileIds = post.files;
-        for(var i = 0; i < fileIds.length; i++){
-          File.findByIdAndRemove(fileIds[i],function(err,file){
-            var filePath = 'public/uploads/' + postId + '/' + file.name;
-            fs.unlinkSync(filePath);
-            var remainingFiles = fs.readdirSync('public/uploads/'+postId+'/');
-            if(remainingFiles.length === 0){
-              fs.rmdirSync('public/uploads/'+postId+'/');
-            }
-          });
-        }
-      }
-      if(err){
-        res.send({status: 'error'});
-      } else {
-        res.send({status: 'ok'});
-      }
-    });
+    async.waterfall([
+      function(fn){m.removePost(postId,fn);},
+      function(post,fn){$POST = post;m.deletePostFiles(postId,$POST.files,fn);},
+      function(fn){res.send({status: 'ok'});}
+    ]);
   }
 };
 

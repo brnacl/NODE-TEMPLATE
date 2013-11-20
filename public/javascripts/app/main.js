@@ -13,7 +13,8 @@ function initialize(){
   $('#logout-button').on('click', clickLogout);
   $('#savefiles').on('click', clickSaveFiles);
   $('#add-image').on('click', clickAddImage);
-  $('#create-post').on('click', clickCreatePost);
+  $('a.update-post').on('click', clickUpdatePost);
+  $('a.create-post').on('click', clickCreatePost);
   $('body').find('a.delete-image').on('click', clickDeleteFile);
   $('body').find('a.delete-post').on('click', clickDeletePost);
   $('body').find('a.delete-user').on('click', clickDeleteUser);
@@ -111,6 +112,8 @@ function clickCreatePost(e){
             window.location = '/admin/posts';
           });
         }
+      } else {
+        window.location = '/admin/posts';
       }
       break;
       case 'error':
@@ -119,8 +122,51 @@ function clickCreatePost(e){
     }
     console.log(result);
   });
+}
 
+function clickUpdatePost(e){
+  var postId = $(this).data('post-id');
+  var url = '/admin/posts/'+postId;
+  var data = {};
+  var file, fileName, fileType, isImage;
+  var fileData = new FormData();
 
+  data.postTitle = $('#new-post input[name="title"]').val();
+  data.postContent = $('#new-post textarea[name="content"]').val();
+  sendAjaxRequest(url, data, 'post', 'put', e, function(result){
+    switch(result.status){
+      case 'ok':
+      if($('#new-post input#file1').val()){
+        url = '/admin/files';
+        $('#new-post input[type="file"]').each(function(i){
+          if(this.files[0]){
+            fileType = this.files[0].type;
+            isImage = validateImageFileType(fileType);
+            if(isImage){
+              file = this.files[0];
+              fileName = $(this).attr('name');
+              fileData.append(fileName,file);
+            }
+          }
+        });
+        if(!isImage){
+          return $('#post-error').text('All files must be images (.jpg, .png, .gif)');
+        } else {
+          fileData.append('postId', result.postId);
+          sendAjaxFiles(url, fileData, 'post', null, e, function(r){
+            window.location = '/admin/posts';
+          });
+        }
+      } else {
+        window.location = '/admin/posts';
+      }
+      break;
+      case 'error':
+        $('#post-error').text('You must at least enter a title for your post!');
+      break;
+    }
+    console.log(result);
+  });
 }
 
 function clickDeleteFile(e){
@@ -132,9 +178,6 @@ function clickDeleteFile(e){
     switch(data.status){
       case 'ok':
         $deleteButton.parent().parent().remove();
-      break;
-      case 'filenotfound':
-        $('p#delete-error').text(data.status);
       break;
       default:
         $('p#delete-error').text(data.status);
