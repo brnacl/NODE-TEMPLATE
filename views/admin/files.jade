@@ -16,7 +16,7 @@ block content
             th
           tbody
             each file in files
-              tr
+              tr.image-container
                 td= moment(file.createdAt).format('MM/DD/YYYY')
                 td: b= file.post.title
                 td= file.name

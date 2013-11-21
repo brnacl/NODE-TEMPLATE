@@ -24,6 +24,7 @@ var m = require('./lib/middleware');
 
 //HOME
 app.get('/', home.index);
+app.get('/posts', home.posts);
 
 //AUTH
 app.get('/login', home.login);

@@ -177,7 +177,7 @@ function clickDeleteFile(e){
   sendAjaxRequest(url, data, 'post', 'delete', e, function(data){
     switch(data.status){
       case 'ok':
-        $deleteButton.parent().parent().remove();
+        $deleteButton.closest('.image-container').remove();
       break;
       default:
         $('p#delete-error').text(data.status);
@@ -259,7 +259,7 @@ function htmlRegisterComplete(data) {
 function htmlLoginComplete(data) {
   switch(data.status){
     case 'ok':
-      var url = '/';
+      var url = '/admin';
       var redirect = getUrlVars()['redirect'];
       if(redirect) url = url + redirect;
       window.location = url;

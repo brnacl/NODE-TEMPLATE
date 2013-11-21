@@ -13,6 +13,8 @@ block content
       - var columns = 12 - (post.files.length * 2)
       .row
         each file in post.files
-          .small-2.columns
+          .small-2.columns.image-container
             img(src='/uploads/'+post.id+'/'+file.name)
+            a.button.delete-image.tiny.alert(data-file-id=file.id) Delete
+
         div(class='small-'+columns+' columns')
