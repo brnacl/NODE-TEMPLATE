@@ -4,3 +4,10 @@ include ../mixins/form-helper
 block content
   .row
     .small-12.columns
+      div(id="myModal", class="reveal-modal", data-reveal)
+        h2 Awesome. I have it.
+        p(class="lead") Your couch.  It is mine.
+        p Im a cool paragraph that lives inside of an even cooler modal. Wins
+        a(class="close-reveal-modal") &#215;
+      a(data-reveal-id="myModal") Click Me For A Modal
+

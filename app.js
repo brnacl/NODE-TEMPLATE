@@ -30,25 +30,34 @@ app.get('/posts', home.posts);
 app.get('/login', home.login);
 app.get('/register', home.register);
 app.post('/users', users.create);
+app.put('/users', users.updateAccount);
 app.put('/login', users.login);
 app.delete('/logout', users.logout);
 
 //ADMIN
-app.get('/admin', m.checkAuth, admin.index);
+app.get('/admin', m.checkAuth, m.checkAdmin, admin.index);
 
-app.get('/admin/users', m.checkAuth, admin.users);
-app.delete('/admin/users', m.checkAuth, admin.deleteUser);
+app.get('/admin/users', m.checkAuth, m.checkAdmin, admin.users);
+app.delete('/admin/users', m.checkAuth, m.checkAdmin, admin.deleteUser);
 
-app.get('/admin/posts', m.checkAuth, admin.posts);
-app.get('/admin/posts/new', m.checkAuth, admin.newPost);
-app.get('/admin/posts/:id', m.checkAuth, admin.editPost);
-app.put('/admin/posts/:id', m.checkAuth, admin.updatePost);
-app.post('/admin/posts', m.checkAuth, admin.createPost);
-app.delete('/admin/posts', m.checkAuth, admin.deletePost);
+app.get('/admin/posts', m.checkAuth, m.checkAdmin, admin.posts);
+app.get('/admin/posts/new', m.checkAuth, m.checkAdmin, admin.newPost);
+app.get('/admin/posts/:id', m.checkAuth, m.checkAdmin, admin.editPost);
+app.put('/admin/posts/:id', m.checkAuth, m.checkAdmin, admin.updatePost);
+app.post('/admin/posts', m.checkAuth, m.checkAdmin, admin.createPost);
+app.delete('/admin/posts', m.checkAuth, m.checkAdmin, admin.deletePost);
 
-app.get('/admin/files', m.checkAuth, admin.files);
-app.post('/admin/files', m.checkAuth, admin.createFiles);
-app.delete('/admin/files', m.checkAuth, admin.deleteFile);
+app.get('/admin/files', m.checkAuth, m.checkAdmin, admin.files);
+app.post('/admin/files', m.checkAuth, m.checkAdmin, admin.createFiles);
+app.delete('/admin/files', m.checkAuth, m.checkAdmin, admin.deleteFile);
+
+// USER
+app.get('/profile', m.checkAuth, users.profile);
+app.get('/profile/edit', m.checkAuth, users.editProfile);
+
+
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function(req,res){res.render('home/404', {title: '404 - Not Found', heading: 'Not Found'});});
 
 // start server & socket.io
 var common = require('./sockets/common');

@@ -1,0 +1,16 @@
+form#profile(action='/profile', method='post')
+  fieldset
+    legend Profile Info
+    .row
+      mixin field(12, 'text', 'firstName', 'First Name', profile ? profile.firstName:null)
+    .row
+      mixin field(12, 'text', 'lastName', 'Last Name', profile ? profile.lastName:null)
+    .row
+      mixin field(12, 'text', 'city', 'City', profile ? profile.city:null)
+    .row
+      mixin field(12, 'text', 'state', 'State', profile ? profile.state:null)
+    .row
+      .small-12.columns: a#update-profile.button.radius.success.tiny Update Profile
+    .row
+      .small-12.columns
+        p#profile-status

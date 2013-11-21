@@ -1,0 +1,16 @@
+form#account(action='/', method='post')
+  fieldset
+    legend Account Info
+    .row
+      mixin field(12, 'text', 'email', 'Email Address', user.email)
+    .row
+      mixin field(12, 'password', 'oldPassword', 'Current Password')
+    .row
+      mixin field(12, 'password', 'newPassword', 'New Password')
+    .row
+      mixin field(12, 'password', 'newPassword2', 'Re-type New password')
+    .row
+      .small-12.columns: a#update-account.button.radius.success.tiny Update Account
+    .row
+      .small-12.columns
+        p#account-status

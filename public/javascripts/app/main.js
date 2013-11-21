@@ -13,6 +13,9 @@ function initialize(){
   $('#logout-button').on('click', clickLogout);
   $('#savefiles').on('click', clickSaveFiles);
   $('#add-image').on('click', clickAddImage);
+  $('#update-account').on('click', clickUpdateAccount);
+  $('#update-profile').on('click', clickUpdateProfile);
+  $('#update-profilePic').on('click', clickUpdateProfilePic);
   $('a.update-post').on('click', clickUpdatePost);
   $('a.create-post').on('click', clickCreatePost);
   $('body').find('a.delete-image').on('click', clickDeleteFile);
@@ -220,6 +223,30 @@ function clickDeleteUser(e){
   });
 }
 
+// Profile Edit
+
+function clickUpdateAccount(e) {
+  var url = '/users';
+  var data = $('form#account').serialize();
+  sendAjaxRequest(url, data, 'post', 'put', e, function(data){
+    htmlUpdateAccountComplete(data);
+  });
+
+
+}
+
+function clickUpdateProfile(e) {
+  alert();
+
+
+}
+
+function clickUpdateProfilePic(e) {
+  alert();
+
+
+}
+
 function initializeSocketIO(){
   var port = location.port ? location.port : '80';
   var url = location.protocol + '//' + location.hostname + ':' + port + '/app';
@@ -259,14 +286,48 @@ function htmlRegisterComplete(data) {
 function htmlLoginComplete(data) {
   switch(data.status){
     case 'ok':
-      var url = '/admin';
+      var url = '/';
       var redirect = getUrlVars()['redirect'];
       if(redirect) url = url + redirect;
       window.location = url;
     break;
-
     default:
       $('p#login-error').empty().append('Invalid Email or Password');
+    break;
+  }
+}
+
+function htmlUpdateAccountComplete(data) {
+  switch(data.status){
+    case 'ok':
+       $('p#account-status').text(data.message);
+       $('section.top-bar-section span.username').text(data.newEmail);
+    break;
+    case 'invalid':
+      $('p#account-status').text('Please use a valid email address');
+    break;
+    case 'nopassword':
+      $('p#account-status').text('Please enter your current password');
+      $('form#account input[name="oldPassword"]').focus();
+    break;
+    case 'badpassword':
+      $('p#account-status').text('Please re-enter your current password');
+      $('form#account input[name="oldPassword"]').val('').focus();
+    break;
+    case 'emailexists':
+      $('p#account-status').text('An account with that email address already exists');
+      $('form#account input[name="email"]').focus();
+    break;
+    case 'nonewpassword2':
+      $('p#account-status').text('Please re-enter your new password');
+      $('form#account input[name="newPassword2"]').focus();
+    break;
+    case 'nomatch':
+      $('p#account-status').text('New password must be entered twice');
+      $('form#account input[name="newPassword2"]').val('').focus();
+    break;
+    case 'nochanges':
+      $('p#account-status').text('Account saved');
     break;
   }
 }
