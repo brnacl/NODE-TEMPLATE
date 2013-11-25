@@ -4,6 +4,9 @@ include ../mixins/form-helper
 block content
   .row
     .small-12.columns
+      h3= heading
+  .row
+    .small-12.columns
       if posts
         each post in posts
           h3.subheader= post.title
