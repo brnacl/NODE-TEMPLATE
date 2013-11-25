@@ -140,6 +140,7 @@ exports.createPost = function(req, res){
 exports.createFiles = function(req, res){
   var newDirname = req.body.postId + '/';
   var newDir = 'public/uploads/' + newDirname;
+  console.log("DIR NAME->"+__dirname);
   var newFiles = [];
   var newFile, $FILEDATA;
 
