@@ -1,99 +1,108 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
+var async = require('async');
 var m = require('../lib/middleware');
 var User = mongoose.model('User');
 var userProfile = mongoose.model('userProfile');
 
+
 exports.profile = function(req, res){
-  userProfile.find({userId: res.locals.user.id}).populate('user').exec(function(err,profile){
+  User.findById(res.locals.user.id).populate('profile').exec(function(err,user){
     res.render('user/profile', {
       title: 'My Profile',
       heading: 'My Profile',
       user: res.locals.user ? res.locals.user : null,
-      profile: profile ? profile : null
+      profile: user.profile ? user.profile : null
     });
   });
 };
 
 exports.editProfile = function(req, res){
-  res.render('user/edit', {
+  res.render('user/editProfile', {
       title: 'Edit Profile',
       heading: 'Edit Profile',
       user: res.locals.user ? res.locals.user : null
     });
 };
 
-exports.create = function(req, res){
-  var status = m.validateRegistration(req.body);
-  if(status === 'ok'){
-    var user = new User();
-    user.email = req.body.email;
-    bcrypt.hash(req.body.password, 10, function(err, hash){
-      user.password = hash;
-      user.save(function(err, user){
-        if(err)
-          {res.send({status: 'error'});}
-        else
-          {res.send({status: 'ok'});}
-      });
+exports.editAccount = function(req, res){
+  res.render('user/editAccount', {
+      title: 'Edit Account',
+      heading: 'Edit Account',
+      user: res.locals.user ? res.locals.user : null
     });
-  } else {
-    res.send({status: status});
-  }
 };
 
-exports.updateAccount = function(req,res){
-  var status = m.validateUpdateAccount(req.body);
-  if(status === 'ok'){
-    User.findById(req.session.userId, function(err, user){
-      if(user.email !== req.body.email){
-        User.findOne({email: req.body.email}, function(err, isUser){
-          if(isUser && isUser.length){
-            res.send({status:'emailexists'});
-          } else {
-            bcrypt.compare(req.body.oldPassword, user.password, function(err, isMatch){
-              if(isMatch){
-                user.email = req.body.email;
-                user.save(function(err,result){
-                  res.locals.user.email = user.email;
-                  if(req.body.newPassword){
-                    bcrypt.hash(req.body.newPassword, 10, function(err, hash){
-                      user.password = hash;
-                      user.save(function(err,userNewPass){
-                        res.send({status: 'ok', message: 'Email Address and Password Updated', newEmail: req.body.email});
-                      });
-                    });
-                  } else {
-                    res.send({status: 'ok', message: 'Email Address Updated', newEmail: req.body.email});
-                  }
-                });
-              } else {
-                res.send({status: 'badpassword'});
-              }
-            });
-          }
-        });
-      } else if(req.body.newPassword){
-        bcrypt.hash(req.body.newPassword, 10, function(err, hash){
-          user.password = hash;
-          user.save(function(err,userNewPass){
-            res.send({status: 'ok', message: 'Password Updated'});
+exports.create = function(req,res){
+  var $email = req.body.email.toLowerCase();
+  async.waterfall([
+    function(fn){m.validateEmail($email,res,fn);},
+    function(fn){m.passwordsMatch(req.body.password, req.body.password2,res,fn);},
+    function(fn){m.accountExists($email,res,fn);},
+    function(fn){
+      var user = new User();
+      user.email = $email;
+      bcrypt.hash(req.body.password, 10, function(err, hash){
+        user.password = hash;
+        new userProfile().save(function(err,profile){
+          user.profile = profile.id;
+          user.save(function(err){
+          if(err)
+            {res.send({status: 'error'});}
+          else
+            {res.send({status: 'ok'});}
           });
         });
-      } else {
-        res.send({status: 'nochanges'});
+      });
+    }
+  ]);
+};
+
+exports.updateAccountPassword = function(req,res){
+  var $oldPassword = req.body.oldPassword ? req.body.oldPassword:null;
+  var $newPassword = req.body.newPassword ? req.body.newPassword:null;
+  var $newPassword2 = req.body.newPassword2 ? req.body.newPassword2:null;
+  User.findById(req.session.userId, function(err, user){
+    async.waterfall([
+      function(fn){if($oldPassword){fn();}else{res.send({status: 'nooldpassword', message: 'Please Enter Your Current Password!'});};},
+      function(fn){bcrypt.compare($oldPassword, user.password, function(err, isMatch){if(isMatch){fn();}else{res.send({status: 'badpassword', message: 'Invalid Password!'});}});},
+      function(fn){m.passwordsMatch($newPassword,$newPassword2,res,fn);},
+      function(fn){
+        bcrypt.hash($newPassword, 10, function(err, hash){
+          user.password = hash;
+          user.save(function(err){
+            res.send({status:'ok', message: 'Your password has been updated successfully!'});
+          });
+        });
       }
-    });
-  } else {
-    res.send({status: status});
-  }
+    ]);
+  });
+};
+
+exports.updateAccountEmail = function(req,res){
+  var $email = req.body.email.toLowerCase();
+  var $email2 = req.body.email2 ? req.body.email2.toLowerCase():null;
+  User.findById(req.session.userId, function(err, user){
+    async.waterfall([
+      function(fn){m.validateEmail($email,res,fn);},
+      function(fn){m.isNewEmail($email,user.email,res,fn);},
+      function(fn){if($email2){fn();}else{res.send({status: 'noemail2', message: 'Please Re-Enter your new Email Address!'});};},
+      function(fn){m.emailsMatch($email,$email2,res,fn);},
+      function(fn){m.accountExists($email,res,fn);},
+      function(fn){
+        user.email = $email;
+        user.save(function(err){
+          res.send({status:'ok', newEmail: user.email, message: 'Your email address has been updated successfully!'});
+        });
+      }
+    ]);
+  });
 };
 
 exports.login = function(req, res){
   var email = req.body.email;
   User.findOne({email: email}, function(err, user){
     if(user){
-
       bcrypt.compare(req.body.password, user.password, function(err, isMatch){
         if(isMatch){
           req.session.regenerate(function(err){

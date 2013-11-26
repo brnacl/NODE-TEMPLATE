@@ -69,6 +69,7 @@ function getUrlVars() {
   return vars;
 }
 
+
 function validateImageFileType(ext) {
   ext = parseLowerCase(ext.substr(ext.indexOf('/') + 1));
   var validFileTypes = ['jpg', 'jpeg', 'png', 'gif'];

@@ -71,7 +71,6 @@ exports.posts = function(req, res){
  */
 
 exports.newPost = function(req, res){
-
   res.render('admin/newPost',
     {
       title: 'Admin - New Post',
@@ -161,6 +160,7 @@ exports.createFiles = function(req, res){
   ]);
 };
 
+
 /*
  * PUT /admin/posts/:id
  */
@@ -195,6 +195,7 @@ exports.deleteFile = function(req,res){
     ]);
   }
 };
+
 
 /*
  * DELETE /admin/posts

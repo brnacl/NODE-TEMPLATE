@@ -5,5 +5,5 @@ form#authentication(action='/', method='post')
       mixin field(6, 'text', 'email', 'Email')
       mixin field(6, 'password', 'password', 'Password')
     .row
-      .small-9.columns: p#login-error
+      .small-9.columns: p#login-error.error-text
       .small-3.columns: button#login.radius.success.small.expand Login

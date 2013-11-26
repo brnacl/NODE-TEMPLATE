@@ -13,7 +13,8 @@ function initialize(){
   $('#logout-button').on('click', clickLogout);
   $('#savefiles').on('click', clickSaveFiles);
   $('#add-image').on('click', clickAddImage);
-  $('#update-account').on('click', clickUpdateAccount);
+  $('#update-email').on('click', clickUpdateEmail);
+  $('#update-password').on('click', clickUpdatePassword);
   $('#update-profile').on('click', clickUpdateProfile);
   $('#update-profilePic').on('click', clickUpdateProfilePic);
   $('a.update-post').on('click', clickUpdatePost);
@@ -225,14 +226,20 @@ function clickDeleteUser(e){
 
 // Profile Edit
 
-function clickUpdateAccount(e) {
-  var url = '/users';
+function clickUpdateEmail(e) {
+  var url = '/users/email';
   var data = $('form#account').serialize();
   sendAjaxRequest(url, data, 'post', 'put', e, function(data){
-    htmlUpdateAccountComplete(data);
+    htmlUpdateEmailComplete(data);
   });
+}
 
-
+function clickUpdatePassword(e) {
+  var url = '/users/password';
+  var data = $('form#account').serialize();
+  sendAjaxRequest(url, data, 'post', 'put', e, function(data){
+    htmlUpdatePasswordComplete(data);
+  });
 }
 
 function clickUpdateProfile(e) {
@@ -265,20 +272,23 @@ function htmlRegisterComplete(data) {
       window.location = '/login?signup=true';
     break;
     case 'invalid':
-      $('p#register-error').text('Please use a valid email address');
+      $('p#register-error').text(data.message);
+    break;
+    case 'emailexists':
+      $('p#register-error').text(data.message);
     break;
     case 'nopassword':
-      $('p#register-error').text('Please enter a password');
+      $('p#register-error').text(data.message);
     break;
     case 'nopassword2':
-      $('p#register-error').text('Please re-type your password');
+      $('p#register-error').text(data.message);
     break;
     case 'nomatch':
-      $('p#register-error').text('Passwords must match exactly');
+      $('p#register-error').text(data.message);
       $('input[name="password2"]').val('');
     break;
     case 'error':
-      $('p#register-error').text('Account already exists');
+      $('p#register-error').text('An unexpected error occurred!');
     break;
   }
 }
@@ -297,37 +307,61 @@ function htmlLoginComplete(data) {
   }
 }
 
-function htmlUpdateAccountComplete(data) {
+function htmlUpdateEmailComplete(data) {
   switch(data.status){
     case 'ok':
-       $('p#account-status').text(data.message);
+       $('p#email-status').text(data.message);
        $('section.top-bar-section span.username').text(data.newEmail);
+       $('form#account input[name="email"]').val('');
+       $('form#account input[name="email2"]').val('');
     break;
     case 'invalid':
-      $('p#account-status').text('Please use a valid email address');
+      $('p#email-status').text(data.message);
     break;
-    case 'nopassword':
-      $('p#account-status').text('Please enter your current password');
+    case 'noemail2':
+      $('p#email-status').text(data.message);
+    break;
+    case 'nomatch':
+      $('p#email-status').text(data.message);
+      $('form#account input[name="email2"]').val('').focus();
+    break;
+    case 'emailexists':
+      $('p#email-status').text(data.message);
+    break;
+    case 'nochanges':
+      $('p#email-status').text(data.message);
+    break;
+  }
+}
+
+
+function htmlUpdatePasswordComplete(data) {
+  switch(data.status){
+    case 'ok':
+       $('p#password-status').text(data.message);
+       $('form#account input[name="oldPassword"]').val('');
+       $('form#account input[name="newPassword"]').val('');
+       $('form#account input[name="newPassword2"]').val('');
+    break;
+    case 'nooldpassword':
+      $('p#password-status').text(data.message);
       $('form#account input[name="oldPassword"]').focus();
     break;
     case 'badpassword':
-      $('p#account-status').text('Please re-enter your current password');
+      $('p#password-status').text(data.message);
       $('form#account input[name="oldPassword"]').val('').focus();
     break;
-    case 'emailexists':
-      $('p#account-status').text('An account with that email address already exists');
-      $('form#account input[name="email"]').focus();
+    case 'nopassword':
+      $('p#password-status').text(data.message);
+      $('form#account input[name="newPassword"]').focus();
     break;
-    case 'nonewpassword2':
-      $('p#account-status').text('Please re-enter your new password');
+    case 'nopassword2':
+      $('p#password-status').text(data.message);
       $('form#account input[name="newPassword2"]').focus();
     break;
     case 'nomatch':
-      $('p#account-status').text('New password must be entered twice');
+      $('p#account-status').text(data.message);
       $('form#account input[name="newPassword2"]').val('').focus();
-    break;
-    case 'nochanges':
-      $('p#account-status').text('Account saved');
     break;
   }
 }
