@@ -28,10 +28,7 @@ app.get('/posts', home.posts);
 
 //AUTH
 app.get('/login', home.login);
-app.get('/register', home.register);
-app.post('/users', users.create);
-app.put('/users/email', users.updateAccountEmail);
-app.put('/users/password', users.updateAccountPassword);
+
 app.put('/login', users.login);
 app.delete('/logout', users.logout);
 
@@ -53,9 +50,17 @@ app.post('/admin/files', m.checkAuth, m.checkAdmin, admin.createFiles);
 app.delete('/admin/files', m.checkAuth, m.checkAdmin, admin.deleteFile);
 
 // USER
+app.get('/register', home.register);
+app.post('/users', users.create);
+
+app.get('/account/edit', m.checkAuth, users.editAccount);
+app.put('/account/email', users.updateAccountEmail);
+app.put('/account/password', users.updateAccountPassword);
+
 app.get('/profile', m.checkAuth, users.profile);
 app.get('/profile/edit', m.checkAuth, users.editProfile);
-app.get('/account/edit', m.checkAuth, users.editAccount);
+app.put('/profile/info', m.checkAuth, users.updateProfileInfo);
+app.put('/profile/pic', m.checkAuth, users.updateProfilePic);
 
 
 //The 404 Route (ALWAYS Keep this as the last route)

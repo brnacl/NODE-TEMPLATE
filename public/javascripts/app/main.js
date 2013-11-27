@@ -227,7 +227,7 @@ function clickDeleteUser(e){
 // Profile Edit
 
 function clickUpdateEmail(e) {
-  var url = '/users/email';
+  var url = '/account/email';
   var data = $('form#account').serialize();
   sendAjaxRequest(url, data, 'post', 'put', e, function(data){
     htmlUpdateEmailComplete(data);
@@ -235,7 +235,7 @@ function clickUpdateEmail(e) {
 }
 
 function clickUpdatePassword(e) {
-  var url = '/users/password';
+  var url = '/account/password';
   var data = $('form#account').serialize();
   sendAjaxRequest(url, data, 'post', 'put', e, function(data){
     htmlUpdatePasswordComplete(data);
@@ -243,7 +243,11 @@ function clickUpdatePassword(e) {
 }
 
 function clickUpdateProfile(e) {
-  alert();
+  var url = '/profile/info';
+  var data = $('form#profile').serialize();
+  sendAjaxRequest(url, data, 'post', 'put', e, function(data){
+    htmlUpdateProfileInfoComplete(data);
+  });
 
 
 }
@@ -364,4 +368,13 @@ function htmlUpdatePasswordComplete(data) {
       $('form#account input[name="newPassword2"]').val('').focus();
     break;
   }
+}
+
+function htmlUpdateProfileInfoComplete(data) {
+
+       $('p#profile-status').text('Profile Information Updated Successfully');
+
+       // $('form#account input[name="email"]').val('');
+       // $('form#account input[name="email2"]').val('');
+
 }
