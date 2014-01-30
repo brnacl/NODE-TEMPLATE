@@ -12,7 +12,7 @@ var admin = require('./routes/admin');
 
 var app = express();
 var RedisStore = require('connect-redis')(express);
-mongoose.connect('mongodb://localhost/auth-todo');
+mongoose.connect('mongodb://localhost/template');
 
 // configure express
 require('./config').initialize(app, RedisStore);

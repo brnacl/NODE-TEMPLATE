@@ -2,6 +2,7 @@
 var mongoose = require('mongoose');
 var async = require('async');
 var m = require('../lib/middleware');
+var moment = require('moment');
 var File = mongoose.model('File');
 var Post = mongoose.model('Post');
 var User = mongoose.model('User');
@@ -42,7 +43,8 @@ exports.users = function(req, res){
         title: 'Admin - Users',
         heading: 'Admin - Users',
         userData: users ? users : null,
-        user: res.locals.user ? res.locals.user : null
+        user: res.locals.user ? res.locals.user : null,
+        moment: moment
       }
     );
   });
@@ -60,7 +62,8 @@ exports.posts = function(req, res){
         title: 'Admin - Posts',
         heading: 'Admin - Posts',
         posts: posts ? posts : null,
-        user: res.locals.user ? res.locals.user : null
+        user: res.locals.user ? res.locals.user : null,
+        moment: moment
       }
     );
   });
@@ -91,7 +94,8 @@ exports.files = function(req, res){
         title: 'Admin - Files',
         heading: 'Admin - Files',
         files: files ? files : null,
-        user: res.locals.user ? res.locals.user : null
+        user: res.locals.user ? res.locals.user : null,
+        moment: moment
       }
     );
   });
